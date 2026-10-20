@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from './CartSlice.jsx'; 
+
 
 function ProductList({ onHomeClick }) {
     const dispatch = useDispatch();
-
+    const cartItems = useSelector((state) => state.cart.items);
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false);
     const [addedToCart, setAddedToCart] = useState({});
+    const isAdded = (plantName) => {
+        return cartItems.some((item) => item.name === plantName) || addedToCart[plantName];
+      };
 
     const plantsArray = [
         {
@@ -321,9 +325,9 @@ function ProductList({ onHomeClick }) {
                                         <button
                                             className="product-button"
                                             onClick={() => handleAddToCart(plant)}
-                                            disabled={addedToCart[plant.name]}
-                                        >
-                                            {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                                            disabled={cartItems.some(item => item.name === plant.name) || addedToCart[plant.name]}
+                                            >
+                                             {cartItems.some(item => item.name === plant.name) || addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
                                         </button>
                                     </div>
                                 ))}
